@@ -11,7 +11,7 @@ from PyViCare.PyViCareUtils import (PyViCareInternalServerError,
 log = logging.getLogger("vicare_exporter")
 unit_translations = {"kilowattHour": "kWh"}
 
-_component_re = re.compile("^heating_(circuit|burner)s_(\d+)(.*)")
+_component_re = re.compile("^heating_(.*)_(\d+)(.*)")
 
 
 def _extract_circuit_id(feature_name) -> tuple[str, str]:
@@ -33,7 +33,6 @@ _metrics = {}
 def get_metric_for_name(name: str, labels: list[str]):
     if name in _metrics:
         return _metrics[name]
-
     if name.endswith("_operating_modes_active_value"):
         _metrics[name] = Enum(
             name,
@@ -69,7 +68,6 @@ def get_metric_for_name(name: str, labels: list[str]):
 
 def extract_feature_metrics(feature: dict, installation_id: str):
 
-    ##print(feature)
     props = feature.get("properties")
     if not props:
         return []
@@ -87,7 +85,7 @@ def extract_feature_metrics(feature: dict, installation_id: str):
     if component_id is not None:
         labels[label_name] = component_id
 
-    for prop in ["value", "active", "shift", "slope", "day", "status"]:
+    for prop in ["value", "active", "shift", "slope", "day", "status","currentDay","lastSevenDays","currentMonth","hours","temperature"]:
         if prop not in props:
             continue
         unit = props[prop].get("unit", "")
@@ -120,7 +118,7 @@ def _fetch_devices_features(vicare: PyViCare) -> int:
 
     n_features = 0
     for device in vicare.devices:
-        features = device.service.fetch_all_features()
+        features = device.asGazBoiler().service.fetch_all_features()
 
         for feature in features["data"]:
             extract_feature_metrics(feature, installation_id=device.service.accessor.id)

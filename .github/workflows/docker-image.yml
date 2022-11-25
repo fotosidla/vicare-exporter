@@ -26,8 +26,8 @@ jobs:
     - name: Build the Docker image
       run: |
         docker build . \
-        --tag ghcr.io/sebbegg/${IMAGE_NAME}:${{ github.run_id }} \
-        --tag ghcr.io/sebbegg/${IMAGE_NAME}:latest
+        --tag ghcr.io/fotosidla/${IMAGE_NAME}:${{ github.run_id }} \
+        --tag ghcr.io/fotosidla/${IMAGE_NAME}:latest
 
     - name: Push docker image
       run: |

@@ -34,18 +34,18 @@ jobs:
         set -ex
 
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        echo docker push ghcr.io/sebbegg/${IMAGE_NAME}:${{ github.run_id }}
+        echo docker push ghcr.io/fotosidla/${IMAGE_NAME}:${{ github.run_id }}
 
         ref="${{ github.ref }}"
 
         if [[ "$ref" == "refs/heads/main" ]]
         then
-          docker push ghcr.io/sebbegg/${IMAGE_NAME}:latest
+          docker push ghcr.io/fotosidla/${IMAGE_NAME}:latest
         fi
 
         if [[ "$ref" =~ refs/tags/v[0-9].* ]]
         then
           version="${{ github.ref_name }}"
-          docker tag ghcr.io/sebbegg/${IMAGE_NAME}:${{ github.run_id }} ghcr.io/sebbegg/${IMAGE_NAME}:$version
-          docker push ghcr.io/sebbegg/${IMAGE_NAME}:$version
+          docker tag ghcr.io/fotosidla/${IMAGE_NAME}:${{ github.run_id }} ghcr.io/fotosidla/${IMAGE_NAME}:$version
+          docker push ghcr.io/fotosidla/${IMAGE_NAME}:$version
         fi
